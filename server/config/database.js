@@ -32,15 +32,14 @@ let makeUserTable = "CREATE TABLE IF NOT EXISTS `denote-schema`.`user` (`id` INT
 connection.query(makeUserTable, function (err, result) {
     if (err) { throw err }
 
-    console.log("User Table created");
+    console.log("User Table created if not pre-existing");
     let makeNoteTable = "CREATE TABLE IF NOT EXISTS `denote-schema`.`note` (`noteid` INT NOT NULL AUTO_INCREMENT,`reminder` VARCHAR(255) NULL,`user_id` INT NULL,PRIMARY KEY (`noteid`),  `created_at` DATETIME NULL,`updated_at` DATETIME NULL,INDEX `fk_note_user_idx` (`user_id` ASC),CONSTRAINT `fk_note_user`FOREIGN KEY (`user_id`)REFERENCES `denote-schema`.`user` (`id`)ON DELETE NO ACTION ON UPDATE NO ACTION);"
     
     connection.query(makeNoteTable, function (err, result) {
         if (err) {
             throw err
         }
-        console.log("created note tables")
-        
+        console.log("Note tables created if not pre-existing")
     })
     
 });
