@@ -29,16 +29,16 @@ export class HttpService {
     return this._http.get(`/api/movies/${id}`);
   }*/
   getNotes(userid:any){
-    console.log('getting all notes in http service');
+    console.log('getting all notes in http service')
     return this._http.get(`/api/notes/${userid}`)//backtick of `` required vs '' due to ES6 template interpolation for the string interpolation used here
 
   }
   createNote(reminder:any, userid:any){
-    console.log('creating note in http service');
+    console.log('creating note in http service')
     return this._http.post(`/api/notes,${userid}`,reminder)
   }
   editNote(reminder:any, noteid:any){
-    console.log('updating note in http service');
+    console.log('updating note in http service')
     return this._http.put(`api/notes/${noteid}`,reminder)
   }
   getUser(userid:any){
