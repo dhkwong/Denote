@@ -41,7 +41,7 @@ export class HttpService {
     console.log('updating note in http service')
     return this._http.put(`api/notes/${noteid}`,reminder)
   }
-  getUser(userid:any){
+  getUser(userid:any){ 
     console.log('retrieving user in http service');
     return this._http.get(`/api/notes/user/${userid}`)
   }
