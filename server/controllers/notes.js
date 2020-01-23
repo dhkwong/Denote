@@ -27,47 +27,56 @@ module.exports = {
     // },
     register: (req, res) => {
         //run query
-        var sql = "SELECT * FROM user WHERE username = (?) AND password = (?)"
+        var sql = "SELECT * FROM user WHERE username = (?) AND password = (?)";
         //if values returned, user already exists
+
         connection.query(sql, [req.body.username, req.body.hashedpass], function (err, results) {
             if (err) throw err
-
-            if (results.length=0) {//if there are no users, the results.length is going to be zero
+            // console.log(results)
+            if (results.length == 0) {//if there are no users, the results.length is going to be zero
                 var sql1 = "INSERT INTO user(username, password) VALUES(?, ?)";
-                connection.query(sql1, [req.body.username, req.body.hashedpass], function (err, results) {
+                connection.query(sql1, [req.body.username, req.body.hashedpass], function (err, result) {
                     if (err) { throw err }
-                    console.log("test")
-                    console.log(results.insertId)
-                    //req.session.uid = results[0].id
-                    res.json(results)
+                    //need one more query to actually recieve the user id and set session
+                    var sql = "SELECT * FROM user WHERE username = (?) AND password = (?)";
+                    connection.query(sql, [req.body.username, req.body.hashedpass], function (err, results) {
+                        if (err) throw err
+                        //set session user id 
+                        req.session.uid = results[0].id
+                        console.log(req.session.uid)
+                    })
+                    res.json({login:true})
                 })
-                
-            }else{
-                console.log(req.body)
-                res.json({message: "ERROR user already exists"})
+            } else {
+                //if response, return uniqueness error
+                res.json({login:false, message: "ERROR user already exists" })
             }
+
         });
 
     },
-    login:(req,res)=>{
+    login: (req, res) => {
         var sql = "SELECT * FROM user WHERE username = (?) AND password = (?) LIMIT 1";
         console.log(req.body)
-        connection.query(sql, [req.body.username, req.body.hashedpass], function(err, results){
-            if(err) throw err;
+        connection.query(sql, [req.body.username, req.body.hashedpass], function (err, results) {
+            if (err) throw err;
             console.log(req.body)
             console.log(results)
-            if(results.length==0){
-                res.json({message:"ERROR user does not exist"})
-            }else{
+            if (results.length == 0) {
+                res.json({ message: "ERROR user does not exist" })
+            } else {
                 //use session to hold user id once logged in
                 //req.session.uid = results[0].id
-                res.json({userid: results[0].id})
+                req.session.uid = results[0].id
+                console.log(req.session.uid);
+                // res.json({ userid: results[0].id })
+                res.json({login:true})
             }
         });
     },
-    getUser: (req, res) => {
+    getUser: (req, res) => {//probably unecessary after login and reg methods created
         var sql = "SELECT * FROM user WHERE id = (?)";
-        //should be POST instead of GET due to the passing of form data
+
         connection.query(sql, [req.params.id], function (err, results) {
             if (err) {
                 throw err
@@ -80,8 +89,9 @@ module.exports = {
 
     },
     getNotes: (req, res) => {
-        var sql = "SELECT * FROM note WHERE user_id =()";
-        connection.query(sql, [req.params.id], function (err, results) {
+        var sql = "SELECT * FROM note WHERE user_id =(?)";
+        console.log("hi"+JSON.stringify(req.session.uid))
+        connection.query(sql, [req.session.uid], function (err, results) {
             if (err) throw err
             console.log(results)
             res.json(results)
