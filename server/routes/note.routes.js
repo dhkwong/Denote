@@ -7,6 +7,7 @@ router.post('/user/register', notes.register)
       .post('/:id', notes.createNote)//creates new note given userID
       .put('/:id', notes.updateNote)//updates note given note id
       .get('/all',notes.getNotes)//gets all notes for user. may not need the /all
+      .delete('/:id', notes.deleteNote)
 
 
 // router.get('/', notes.all)

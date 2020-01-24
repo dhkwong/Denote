@@ -45,11 +45,11 @@ module.exports = {
                         req.session.uid = results[0].id
                         console.log(req.session.uid)
                     })
-                    res.json({login:true})
+                    res.json({ login: true })
                 })
             } else {
                 //if response, return uniqueness error
-                res.json({login:false, message: "ERROR user already exists" })
+                res.json({ login: false, message: "ERROR user already exists" })
             }
 
         });
@@ -59,19 +59,34 @@ module.exports = {
         var sql = "SELECT * FROM user WHERE username = (?) AND password = (?) LIMIT 1";
         console.log(req.body)
         connection.query(sql, [req.body.username, req.body.hashedpass], function (err, results) {
-            if (err) throw err;
-            console.log(req.body)
-            console.log(results)
-            if (results.length == 0) {
-                res.json({ message: "ERROR user does not exist" })
-            } else {
+            if (err) {
+                //find format and response types for mysql errors
+                const errors = Object.keys(err.errors).map(key => err.errors[key].message);
+                res.status(400).json(errors);
+            }else if(results.length==0){
+                res.json({login:false})
+            } 
+            else {
                 //use session to hold user id once logged in
                 //req.session.uid = results[0].id
                 req.session.uid = results[0].id
                 console.log(req.session.uid);
                 // res.json({ userid: results[0].id })
-                res.json({login:true})
+                res.json({ login: true })
             }
+            // if (err) throw err;
+            // console.log(req.body)
+            // console.log(results)
+            // if (results.length == 0) {
+            //     res.json({ message: "ERROR user does not exist" })
+            // } else {
+            //     //use session to hold user id once logged in
+            //     //req.session.uid = results[0].id
+            //     req.session.uid = results[0].id
+            //     console.log(req.session.uid);
+            //     // res.json({ userid: results[0].id })
+            //     res.json({login:true})
+            // }
         });
     },
     getUser: (req, res) => {//probably unecessary after login and reg methods created
@@ -90,7 +105,7 @@ module.exports = {
     },
     getNotes: (req, res) => {
         var sql = "SELECT * FROM note WHERE user_id =(?)";
-        console.log("hi"+JSON.stringify(req.session.uid))
+        console.log("hi" + JSON.stringify(req.session.uid))
         connection.query(sql, [req.session.uid], function (err, results) {
             if (err) throw err
             console.log(results)
@@ -117,6 +132,13 @@ module.exports = {
             console.log(reg.body.reminder)
             console.log(req.params.id)
             res.json(results)
+        });
+    },
+    deleteNote: (req, res) => {
+        var sql = "DELETE FROM notes WHERE id = (?)"
+        connection.query(sql, [req.param.id], function (err) {
+            if (err) throw err
+
         });
     }
 

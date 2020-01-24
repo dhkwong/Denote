@@ -28,25 +28,29 @@ export class HttpService {
     console.log("I'm retrieving a movie in findMovie: http.service",id);
     return this._http.get(`/api/movies/${id}`);
   }*/
-  getNotes(userid:any){
+  getNotes(userId:any){
     console.log('getting all notes in http service')
-    return this._http.get(`/api/notes/${userid}`)//backtick of `` required vs '' due to ES6 template interpolation for the string interpolation used here
+    return this._http.get(`/api/notes/${userId}`)//backtick of `` required vs '' due to ES6 template interpolation for the string interpolation used here
 
   }
-  createNote(reminder:any, userid:any){
+  createNote(reminder:any, userId:any){
     console.log('creating note in http service')
-    return this._http.post(`/api/notes,${userid}`,reminder)
+    return this._http.post(`/api/notes,${userId}`,reminder)
   }
   editNote(reminder:any, noteid:any){
     console.log('updating note in http service')
     return this._http.put(`api/notes/${noteid}`,reminder)
   }
-  getUser(userid:any){ 
-    console.log('retrieving user in http service');
-    return this._http.get(`/api/notes/user/${userid}`)
+  deleteNote(noteId:any){
+    console.log('deleting Note in httpService')
+    return this._http.delete(`api/notes/${noteId}`)
   }
-  createUser(username:any, hashedpass:any){
+  getUser(userId:any){ 
+    console.log('retrieving user in http service');
+    return this._http.get(`/api/notes/user/${userId}`)
+  }
+  createUser(userName:any, hashedPass:any){
     console.log('creating user in http service');
-    return this._http.post(`/api/notes/user`,username, hashedpass)
+    return this._http.post(`/api/notes/user`,userName, hashedPass)
   }
 }
