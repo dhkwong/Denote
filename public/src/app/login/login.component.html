@@ -1,1 +1,20 @@
 <p>login works!</p>
+
+<div *ngIf="replyerrors">
+    <div *ngFor="let error of replyerrors">
+        {{error}}
+    </div>
+</div>
+
+<div *ngIf = "loginUser" >
+        {[loginUser]}
+<form (submit)="login(login.value)" #login="ngForm">
+    <!--may not need the [ngModel] as you're passing in the form data directly with the #login=ngForm-->
+    <input type="text" name="username" [ngModel]="loginUser.username" />
+   
+    <input type="text" name="password" [ngModel]="loginUser.password" />
+    <p></p>
+    <input type="submit" value="Login" />
+    <a class="btn btn-dark rounded ml-2" routerLink="/login">Cancel</a>
+</form>
+</div>

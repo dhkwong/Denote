@@ -92,14 +92,17 @@ module.exports = {
     getUser: (req, res) => {//probably unecessary after login and reg methods created
         var sql = "SELECT * FROM user WHERE id = (?)";
 
-        connection.query(sql, [req.params.id], function (err, results) {
+        connection.query(sql, [req.session.uid], function (err, results) {
             if (err) {
                 throw err
+            }
+            if(results.length==0){
+                res.json({userId:false})
             }
             //[ RowDataPacket { id: 1, username: 'daryl1', password: 'pass1' } ]
 
             console.log("user data returned: " + JSON.stringify(results))
-            res.json({ userid: results[0].id, userName: results[0].username })
+            res.json({ userId: results[0].id, userName: results[0].username })
         });
 
     },

@@ -45,12 +45,18 @@ export class HttpService {
     console.log('deleting Note in httpService')
     return this._http.delete(`api/notes/${noteId}`)
   }
-  getUser(userId:any){ 
+  //retrieves stored userID 
+  getUser(){ 
     console.log('retrieving user in http service');
-    return this._http.get(`/api/notes/user/${userId}`)
+    
+    return this._http.get(`/api/notes/user/`)
   }
-  createUser(userName:any, hashedPass:any){
+  loginUser(userName:any, hashedPass:any){
     console.log('creating user in http service');
-    return this._http.post(`/api/notes/user`,userName, hashedPass)
+    return this._http.post(`/api/notes/user/login`,userName, hashedPass)
+  }
+  registerUser(userName:any, hashedPass:any){
+    console.log('registering user in http service');
+    return this._http.post(`/api/notes/user/register`, userName, hashedPass)
   }
 }
