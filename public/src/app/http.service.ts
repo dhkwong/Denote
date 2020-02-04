@@ -49,10 +49,12 @@ export class HttpService {
   getUser(){ 
     console.log('retrieving user in http service');
     
-    return this._http.get(`/api/notes/user/`)
+    return this._http.get(`/api/notes/user`)
   }
   loginUser(userName:any, hashedPass:any){
     console.log('creating user in http service');
+    console.log(userName);
+    console.log(hashedPass);
     return this._http.post(`/api/notes/user/login`,userName, hashedPass)
   }
   registerUser(userName:any, hashedPass:any){

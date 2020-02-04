@@ -8,7 +8,7 @@ const bp = require('body-parser');
 const router = require('./server/routes');
 app.use(express.urlencoded({extended: true}));
 app.use(bp.urlencoded({ extended: false }))
-app.use(bp.json())
+app.use(bp.json());
 app.use(express.static( path.join(__dirname, './public/dist/public')));
 //use session
 app.use(session({

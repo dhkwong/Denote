@@ -6,15 +6,48 @@
     </div>
 </div>
 
-<div *ngIf = "loginUser" >
-        {[loginUser]}
-<form (submit)="login(login.value)" #login="ngForm">
+<div *ngIf="testData">
+    <div *ngFor="let t of testData[0]">
+        {{t}}
+
+    </div>
+    {{testData}}
+</div>
+<!--
+<form #signupForm="ngForm" (ngSubmit)="registerUser(signupForm)">
+  <label for="email">Email</label>
+  <input type="text" name="email" id="email" ngModel>
+
+  <label for="password">Password</label>
+  <input type="password" name="password" id="password" ngModel>
+
+  <button type="submit">Sign Up</button>
+</form>
+
+-->
+
+<form (ngSubmit)="login(loginValue)" #loginValue="ngForm">
     <!--may not need the [ngModel] as you're passing in the form data directly with the #login=ngForm-->
-    <input type="text" name="username" [ngModel]="loginUser.username" />
-   
+    <!-- <input type="text" name="username" [ngModel]="loginUser.username" />
     <input type="text" name="password" [ngModel]="loginUser.password" />
+     -->
+     <label for="username">Username</label>
+     <input type="text" name="username" id="username" ngModel/>
+     <label for="password">Password</label>
+     <input type="text" name="password" id="password" ngModel/>
     <p></p>
     <input type="submit" value="Login" />
     <a class="btn btn-dark rounded ml-2" routerLink="/login">Cancel</a>
 </form>
-</div>
+
+<form (ngSubmit)="register(registerValue)" #registerValue="ngForm">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="registerusername" ngModel/>
+        <label for="password">Password</label>
+        <input type="text" name="password" id="registerpassword" ngModel/>
+       <p></p>
+       <input type="submit" value="Register" />
+       <a class="btn btn-dark rounded ml-2" routerLink="/login">Cancel</a>
+
+
+</form>
