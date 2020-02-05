@@ -34,51 +34,56 @@ export class HomeComponent implements OnInit {
     this._httpService.getUser()
       .subscribe(data => {
         console.log(JSON.stringify(data))
-        this.userId = data[0].userId;
+        if (JSON.stringify(data).length === 0) {
+          this._router.navigate(['/login'])
+        } else {
+          this.userId = data[0].userId;
+
+        }
       },
         error => {
-          
+
           this._router.navigate(['/login'])
           //store userId to get all notes with pertaining to user
         }
       );
   }
 
-/*
-this.httpService.makeRequest()
-  .subscribe(
-    result => {
-      // Handle result
-      console.log(result)
-    },
-    error => {
-      this.errors = error;
-    },
-    () => {
-      // 'onCompleted' callback.
-      // No errors, route to new page here
-    }
-  );
-*/
-getNotes() {
-  this._httpService.getNotes(this.userId)
-
-    .subscribe(data => {
-      console.log('got notes in home.component.ts' + data)
-      //saves data into array called notes
-      this.notes = data;
-    },
-    error=>{
-      
-    }
-    
+  /*
+  this.httpService.makeRequest()
+    .subscribe(
+      result => {
+        // Handle result
+        console.log(result)
+      },
+      error => {
+        this.errors = error;
+      },
+      () => {
+        // 'onCompleted' callback.
+        // No errors, route to new page here
+      }
     );
+  */
+  getNotes() {
+    this._httpService.getNotes(this.userId)
 
-}
-addNote() {
+      .subscribe(data => {
+        console.log('got notes in home.component.ts' + data)
+        //saves data into array called notes
+        this.notes = data;
+      },
+        error => {
 
-}
-updateNote() {
+        }
 
-}
+      );
+
+  }
+  addNote() {
+
+  }
+  updateNote() {
+
+  }
 }

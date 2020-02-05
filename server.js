@@ -6,8 +6,11 @@ const session = require('express-session');
 const path = require('path');
 const bp = require('body-parser');
 const router = require('./server/routes');
-app.use(express.urlencoded({extended: true}));
-app.use(bp.urlencoded({ extended: false }))
+//default has no type, with extended as true
+app.use(express.urlencoded({extended: true, type:"application/x-www-form-urlencoded"}))
+
+//default no type extended false
+app.use(bp.urlencoded({ extended: false}))
 app.use(bp.json());
 app.use(express.static( path.join(__dirname, './public/dist/public')));
 //use session

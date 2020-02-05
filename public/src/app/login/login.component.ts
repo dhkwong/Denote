@@ -21,12 +21,13 @@ export class LoginComponent implements OnInit {
   login(form: NgForm) {
 
 
-    console.log("Stringify data username: " + form.value.username)
-    console.log("Stringify data password: " + form.value.password)
-
+    console.log("login data username: " + form.value.username)
+    console.log("login data password: " + form.value.password)
+    let formvalue = form.value;
+    console.log("formvalue: "+ formvalue)
 
     // console.log("username: " + this.loginUser.username + " Pass: " + this.loginUser.password)
-    this._httpService.loginUser(form.value.username, form.value.password)
+    this._httpService.loginUser(formvalue)
     .subscribe(data => {
       if (JSON.stringify(data) === '{"login":false}') {
       console.log("subscribe login data: " + JSON.stringify(data))

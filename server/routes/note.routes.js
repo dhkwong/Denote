@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const notes = require('./../controllers/notes');
+
 router.post('/user/register', notes.register)
       .post('/user/login', notes.login)//gets user with given id
       .get('/user', notes.getUser)

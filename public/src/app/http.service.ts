@@ -39,11 +39,11 @@ export class HttpService {
   }
   editNote(reminder:any, noteid:any){
     console.log('updating note in http service')
-    return this._http.put(`api/notes/${noteid}`,reminder)
+    return this._http.put(`/api/notes/${noteid}`,reminder)
   }
   deleteNote(noteId:any){
     console.log('deleting Note in httpService')
-    return this._http.delete(`api/notes/${noteId}`)
+    return this._http.delete(`/api/notes/${noteId}`)
   }
   //retrieves stored userID 
   getUser(){ 
@@ -51,14 +51,19 @@ export class HttpService {
     
     return this._http.get(`/api/notes/user`)
   }
-  loginUser(userName:any, hashedPass:any){
-    console.log('creating user in http service');
-    console.log(userName);
-    console.log(hashedPass);
-    return this._http.post(`/api/notes/user/login`,userName, hashedPass)
+  // loginUser(userName:any, password:any){
+  //   console.log('creating user in http service')
+  //   console.log("http service username for login: "+userName)
+  //   console.log("http service password for login: "+password);
+  //   return this._http.post(`/api/notes/user/login`,userName, password)
+  // }
+  loginUser(form:any){
+    console.log('creating user in http service')
+
+    return this._http.post(`/api/notes/user/login`,form)
   }
-  registerUser(userName:any, hashedPass:any){
+  registerUser(username:any, password:any){
     console.log('registering user in http service');
-    return this._http.post(`/api/notes/user/register`, userName, hashedPass)
+    return this._http.post(`/api/notes/user/register`, {username:username, password:password})
   }
 }

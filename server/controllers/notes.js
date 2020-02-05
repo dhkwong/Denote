@@ -18,7 +18,7 @@ module.exports = {
     // createUser: (req, res) => {
     //     //inserts but doesn't return data
     //     var sql = "INSERT INTO user(username, password) VALUES(?, ?)";
-    //     connection.query(sql, [req.body.username, req.body.hashedpass], function (err, results) {
+    //     connection.query(sql, [req.body.username, req.body.password], function (err, results) {
     //         if (err) { throw err }
     //         console.log("test")
     //         console.log(results.insertId)
@@ -29,21 +29,23 @@ module.exports = {
         //keep bcrypt hashing logic on backend
         var sql = "SELECT * FROM user WHERE username = (?) AND password = (?)";
         //if values returned, user already exists
-        console.log("register req.body: " + JSON.stringify(req.body.userName));
-        connection.query(sql, [req.body.username, req.body.hashedpass], function (err, results) {
+        console.log("register req.body: " + JSON.stringify(req.body));
+        connection.query(sql, [req.body.username, req.body.password], function (err, results) {
             if (err) throw err
             // console.log(results)
             if (results.length == 0) {//if there are no users, the results.length is going to be zero
                 var sql1 = "INSERT INTO user(username, password) VALUES(?, ?)";
-                connection.query(sql1, [req.body.username, req.body.hashedpass], function (err, result) {
+                connection.query(sql1, [req.body.username, req.body.password], function (err, result) {
                     if (err) { throw err }
                     //need one more query to actually recieve the user id and set session
                     else {
                         var sql = "SELECT * FROM user WHERE username = (?) AND password = (?) LIMIT 1";
-                        connection.query(sql, [req.body.username, req.body.hashedpass], function (err, results) {
+                        connection.query(sql, [req.body.username, req.body.password], function (err, results) {
                             if (err) { throw err }
                             //set session user id 
                             else {
+                                //error at .id
+                                console.log(JSON.stringify(results))
                                 req.session.uid = results[0].id
                                 console.log(req.session.uid)
 
@@ -62,14 +64,17 @@ module.exports = {
     },
     login: (req, res) => {
         //should actually use bcrypt here to keep the hash logic on backend
-        var sql = "SELECT * FROM user WHERE username = (?) AND password = (?) LIMIT 1";
-        console.log("login body: " + JSON.stringify(req.body))
-        
-        connection.query(sql, [req.body.userName, req.body.hashedPass], function (err, results) {
+        console.log("login username: " + JSON.stringify(req.body.username))
+        console.log("login password: " + JSON.stringify(req.body.password))
+
+        var sql = "SELECT * FROM user WHERE username = ? AND password = ? LIMIT 1";
+        //cannot stringify, need to pass in the the body.username and password as is
+        connection.query(sql, [req.body.username, req.body.password], function (err, results) {
+            console.log("login result: "+JSON.stringify(results))
             if (err) {
                 //find format and response types for mysql errors
-                const errors = Object.keys(err.errors).map(key => err.errors[key].message);
-                res.status(400).json(errors);
+                const errors = Object.keys(err.errors).map(key => err.errors[key].message)
+                res.status(400).json(errors)
             } else if (results.length === 0) {
                 res.json({ login: false })
             }
@@ -78,7 +83,7 @@ module.exports = {
                 //req.session.uid = results[0].id
 
                 req.session.uid = results[0].id
-                console.log("login assinging session id: " + results[0].id);
+                console.log("login assinging session id: " + results[0].id)
                 // res.json({ userid: results[0].id })
                 res.json({ login: true })
             }
@@ -104,7 +109,7 @@ module.exports = {
                     console.log("user data returned: " + JSON.stringify(results))
                     res.json({ userId: results[0].id, userName: results[0].username })
                 }
-            });
+            })
 
         } catch (error) {
             res.json({ login: false });
