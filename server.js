@@ -7,7 +7,7 @@ const path = require('path');
 const bp = require('body-parser');
 const router = require('./server/routes');
 //default has no type, with extended as true
-app.use(express.urlencoded({extended: true, type:"application/x-www-form-urlencoded"}))
+app.use(express.urlencoded({extended: true}))
 
 //default no type extended false
 app.use(bp.urlencoded({ extended: false}))

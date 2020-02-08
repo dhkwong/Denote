@@ -42,26 +42,27 @@ export class LoginComponent implements OnInit {
     }
     )
   }
-  //...may have just done login for register
-  register(form: NgForm) {
+  
+  register(formvalue: NgForm) {
 
-    console.log("Register Stringify data: " + JSON.stringify(form.value))
-
+    console.log("Register Stringify data: " + JSON.stringify(formvalue.value))
     // console.log("username: " + this.loginUser.username + " Pass: " + this.loginUser.password)
-    this._httpService.registerUser(JSON.stringify(form.value.registerusername), JSON.stringify(form.value.registerpassword))
+    this._httpService.registerUser(formvalue.value)
       .subscribe(data => {
         if (JSON.stringify(data) == 'false') {
           //if no user found
+          console.log('registration failed')
           this._router.navigate(['/login'])
         } else {
           //else user found reroute to home
-          console.log("angular register stringifydata" + JSON.stringify(data))
+          console.log("angular register stringifydata" + data)
           this._router.navigate(['/home']);
         }
       },
         //if error reroute to login
         error => {
-          this._router.navigate(['/login']);
+          console.log(JSON.stringify(error.message))
+          this._router.navigate(['/login'])
         }
 
       );

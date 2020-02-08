@@ -21,23 +21,16 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    //if already logged in, the node session will have a userid stored to log in. If it doesn't, should just reroute the user to log in
-    // this._httpService.getUser().subscribe(data => {
-    //   console.log("data: "+data[0]);
-    //   if (data[0].userId == false) {
-    //     this._router.navigate(['/login'])
-    //   } else {
-    //     //store userId to get all notes with pertaining to user
-    //     this.userId = data[0].userId;
-    //   }
-    // })
+    this.getUser();
+  }
+  getUser() {
     this._httpService.getUser()
       .subscribe(data => {
-        console.log(JSON.stringify(data))
+        console.log("userId: " + data.userId)
         if (JSON.stringify(data).length === 0) {
           this._router.navigate(['/login'])
         } else {
-          this.userId = data[0].userId;
+          this.userId = data.userId;
 
         }
       },
@@ -49,39 +42,23 @@ export class HomeComponent implements OnInit {
       );
   }
 
-  /*
-  this.httpService.makeRequest()
-    .subscribe(
-      result => {
-        // Handle result
-        console.log(result)
-      },
-      error => {
-        this.errors = error;
-      },
-      () => {
-        // 'onCompleted' callback.
-        // No errors, route to new page here
-      }
-    );
-  */
+
   getNotes() {
     this._httpService.getNotes(this.userId)
-
       .subscribe(data => {
         console.log('got notes in home.component.ts' + data)
         //saves data into array called notes
         this.notes = data;
       },
         error => {
-
+          this._router.navigate(['/login'])
         }
-
       );
 
   }
   addNote() {
-
+  }
+  deleteNote(){
   }
   updateNote() {
 

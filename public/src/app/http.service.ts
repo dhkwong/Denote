@@ -62,8 +62,8 @@ export class HttpService {
 
     return this._http.post(`/api/notes/user/login`,form)
   }
-  registerUser(username:any, password:any){
+  registerUser(form:any){
     console.log('registering user in http service');
-    return this._http.post(`/api/notes/user/register`, {username:username, password:password})
+    return this._http.post(`/api/notes/user/register`, form)
   }
 }

@@ -1,4 +1,3 @@
-<p>login works!</p>
 
 <div *ngIf="replyerrors">
     <div *ngFor="let error of replyerrors">
@@ -13,41 +12,35 @@
     </div>
     {{testData}}
 </div>
-<!--
-<form #signupForm="ngForm" (ngSubmit)="registerUser(signupForm)">
-  <label for="email">Email</label>
-  <input type="text" name="email" id="email" ngModel>
-
-  <label for="password">Password</label>
-  <input type="password" name="password" id="password" ngModel>
-
-  <button type="submit">Sign Up</button>
-</form>
-
--->
-
-<form (ngSubmit)="login(loginValue)" #loginValue="ngForm">
-    <!--may not need the [ngModel] as you're passing in the form data directly with the #login=ngForm-->
-    <!-- <input type="text" name="username" [ngModel]="loginUser.username" />
-    <input type="text" name="password" [ngModel]="loginUser.password" />
-     -->
-     <label for="username">Username</label>
-     <input type="text" name="username" id="username" ngModel/>
-     <label for="password">Password</label>
-     <input type="text" name="password" id="password" ngModel/>
-    <p></p>
-    <input type="submit" value="Login" />
-    <a class="btn btn-dark rounded ml-2" routerLink="/login">Cancel</a>
-</form>
-
-<form (ngSubmit)="register(registerValue)" #registerValue="ngForm">
-        <label for="username">Username</label>
-        <input type="text" name="username" id="registerusername" ngModel/>
-        <label for="password">Password</label>
-        <input type="text" name="password" id="registerpassword" ngModel/>
-       <p></p>
-       <input type="submit" value="Register" />
-       <a class="btn btn-dark rounded ml-2" routerLink="/login">Cancel</a>
 
 
-</form>
+<div class="container-fluid">
+    <div class="row">
+        <div class=" col-5 inline d-flex justify-content-center">
+            <form (submit)="login(loginValue)" #loginValue="ngForm">
+                <h4 class="block">Login</h4>
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" ngModel />
+                <p></p>
+                <label for="password">Password</label>
+                <input type="text" name="password" id="password" ngModel />
+                <p></p>
+                <input type="submit" value="Login" />
+                <a class="btn btn-dark rounded ml-2" routerLink="/login">Cancel</a>
+            </form>
+        </div>
+        <div class="col-5 inline-block  d-flex justify-content-left">
+            <form (submit)="register(registerValue)" #registerValue="ngForm">
+                <h4>Register</h4>
+                <label for="username">Username</label>
+                <input type="text" name="username" id="registerusername" ngModel />
+                <p></p>
+                <label for="password">Password</label>
+                <input type="text" name="password" id="registerpassword" ngModel />
+                <p></p>
+                <input type="submit" value="Register" />
+                <a class="btn btn-dark rounded ml-2" routerLink="/login">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
