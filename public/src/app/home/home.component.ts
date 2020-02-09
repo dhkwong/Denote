@@ -11,7 +11,7 @@ import { NgForm } from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
   //save userID
-  userId: any;
+  userId:any;
   notes: any = [];
 
   constructor(
@@ -21,16 +21,25 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.userId= {userId:"", username:""};
     this.getUser();
+   
   }
   getUser() {
     this._httpService.getUser()
-      .subscribe(data => {
-        console.log("userId: " + data.userId)
-        if (JSON.stringify(data).length === 0) {
+      .subscribe( data => {
+       console.log("data length in getUser: "+Object.keys(data).length)
+       console.log("data in getUser: "+data)
+       //Object.keys(customer).length
+        if (Object.keys(data).length === 0) {
           this._router.navigate(['/login'])
         } else {
-          this.userId = data.userId;
+
+          // this.userId = data[0].userId;
+          console.log("first data: "+JSON.stringify(data))
+          this.userId = data;
+          console.log("this.userId: "+this.userId.userId);
+          
 
         }
       },

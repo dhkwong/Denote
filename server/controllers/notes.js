@@ -38,10 +38,9 @@ module.exports = {
             else if (results.length == 0) {//if there are no users, the results.length is going to be zero and you can create a user
                 var sql1 = "INSERT INTO user(username, password) VALUES(?, ?)";
                 connection.query(sql1, [req.body.username, req.body.password], function (err, result) {
-                    console.log("Registration insert result:  " + JSON.stringify(result.changedRows, result.affectedRows))
-                    if (err) { throw err }
-                    //need one more query to actually recieve the user id and set session
-                    else {
+                    console.log("Registration insert result:  " + JSON.stringify(result))
+                    try {
+                        //select user that was just created
                         var sql = "SELECT * FROM user WHERE username = (?) AND password = (?) LIMIT 1";
                         connection.query(sql, [req.body.username, req.body.password], function (err, results) {
 
@@ -52,10 +51,14 @@ module.exports = {
                                 req.session.uid = JSON.stringify(results[0].id)
                                 console.log(req.session.uid)
 
+                                res.json({ login: true })
                             }
                         })
-                        res.json({ login: true })
+
+                    } catch (error) {
+                        res.json(error);
                     }
+
                 });
             } else {
                 //if response, return uniqueness error
@@ -128,16 +131,17 @@ module.exports = {
     getUser: (req, res) => {//probably unecessary after login and reg methods created
         var sql = "SELECT * FROM user WHERE id = (?)";
         console.log("getuser sessionuid in getUser: " + JSON.stringify(req.session))
-        let session = JSON.stringify(req.session.uid)
+        let session = req.session.uid
         try {
             connection.query(sql, [session], function (err, results) {
                 if (err) {
-                    console.log("getUser session in error catch: " + req.session.uid)
+                    console.log("error in getUser SELECTing user: " + req.session.uid)
                     throw err
                 }
-                //do I need this
-                else if (results.length == 0) {
-                    console.log("getUser session if no user: " + req.session.uid)
+                //if query gives nothing
+                else if (results.length === 0) {
+                    console.log("in getUser retrieving user: " + req.session.uid)
+                    console.log("in getUser results length ===0: "+results)
                     res.json({ userId: false })
                 }
                 //[ RowDataPacket { id: 1, username: 'daryl1', password: 'pass1' } ]
