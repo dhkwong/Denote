@@ -159,7 +159,7 @@ module.exports = {
     },
     getNotes: (req, res) => {
         var sql = "SELECT * FROM note WHERE user_id =(?)";
-        console.log("hi" + JSON.stringify(req.session.uid))
+        console.log("getNotes userId: " + JSON.stringify(req.session.uid))
         connection.query(sql, [req.session.uid], function (err, results) {
             if (err) throw err
             console.log(results)

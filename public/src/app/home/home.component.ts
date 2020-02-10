@@ -11,7 +11,7 @@ import { NgForm } from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
   //save userID
-  userId:any;
+  user:any;
   notes: any = [];
 
   constructor(
@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.userId= {userId:"", username:""};
+    this.user= {userId:"", username:""};
     this.getUser();
    
   }
@@ -31,14 +31,20 @@ export class HomeComponent implements OnInit {
        console.log("data length in getUser: "+Object.keys(data).length)
        console.log("data in getUser: "+data)
        //Object.keys(customer).length
+       //if nothing returns aka no such user
         if (Object.keys(data).length === 0) {
           this._router.navigate(['/login'])
-        } else {
-
+        } 
+        //if registration is false aka preexisting user
+        else if(JSON.stringify(data)==='{"userId":false}'){
+          this._router.navigate(['/login'])
+        }
+        else {
+          //else assign userid and name
           // this.userId = data[0].userId;
           console.log("first data: "+JSON.stringify(data))
-          this.userId = data;
-          console.log("this.userId: "+this.userId.userId);
+          this.user = data;
+          console.log("this.userId: "+this.user.userId);
           
 
         }
@@ -53,7 +59,7 @@ export class HomeComponent implements OnInit {
 
 
   getNotes() {
-    this._httpService.getNotes(this.userId)
+    this._httpService.getNotes(this.user)
       .subscribe(data => {
         console.log('got notes in home.component.ts' + data)
         //saves data into array called notes

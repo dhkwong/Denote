@@ -58,7 +58,7 @@ export class HttpService {
   //   return this._http.post(`/api/notes/user/login`,userName, password)
   // }
   loginUser(form:any){
-    console.log('creating user in http service')
+    console.log('logging in user in http service')
 
     return this._http.post(`/api/notes/user/login`,form)
   }
