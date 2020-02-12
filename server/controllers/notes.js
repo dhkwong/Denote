@@ -166,12 +166,13 @@ module.exports = {
             res.json(results)
         });
     },
+    //for userid, probably should just pass in body vs in param/url
     createNote: (req, res) => {
         var sql = "INSERT INTO note(reminder,user_id) SET reminder = (?), user_id = (?)"
         //params is from url, req.body contains key-value pairs for data submitted in the request body.
         //the note reminder content itself will be stored within the req.body and the user id will be passed within the url 
         //might just need to pass in req.body vs req.body.reminder
-        connection.query(sql, [req, body.reminder, req.params.id], function (err, results) {
+        connection.query(sql, [req.body.reminder, req.params.id], function (err, results) {
             if (err) throw err
             console.log(req.body.reminder)
             console.log(req.params.id)

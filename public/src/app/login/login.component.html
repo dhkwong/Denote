@@ -1,20 +1,11 @@
-
 <div *ngIf="replyerrors">
     <div *ngFor="let error of replyerrors">
         {{error}}
     </div>
 </div>
 
-<div *ngIf="testData">
-    <div *ngFor="let t of testData[0]">
-        {{t}}
 
-    </div>
-    {{testData}}
-</div>
-
-
-<div class="container-fluid">
+<div class="container-fluid mt-5">
     <div class="row">
         <div class=" col-5 inline d-flex justify-content-center">
             <form (submit)="login(loginValue)" #loginValue="ngForm">

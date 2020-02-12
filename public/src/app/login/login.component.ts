@@ -19,12 +19,10 @@ export class LoginComponent implements OnInit {
   }
   
   login(form: NgForm) {
-
-
     console.log("login data username: " + form.value.username)
     console.log("login data password: " + form.value.password)
     let formvalue = form.value;
-    console.log("formvalue: "+ formvalue)
+    // console.log("formvalue: "+ form)
 
     // console.log("username: " + this.loginUser.username + " Pass: " + this.loginUser.password)
     this._httpService.loginUser(formvalue)
@@ -53,6 +51,7 @@ export class LoginComponent implements OnInit {
           //if no user found
           console.log('registration failed')
           this._router.navigate(['/login'])
+          
         } else {
           //else user found reroute to home
           console.log("angular register stringifydata" + data)

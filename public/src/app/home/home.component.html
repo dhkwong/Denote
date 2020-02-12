@@ -3,3 +3,21 @@
 <div *ngIf="user">
     <h5>{{user.userName}} {{user.userId}}</h5>
 </div>
+<div class="container-fluid">
+
+    <form (submit)="addNote(noteValue)" #noteValue="ngForm">
+
+        <label for="reminder">reminder</label>
+        <p></p>
+        <textarea type="text" name="reminder" id="reminder" ngModel></textarea>
+        <p></p>
+        <input type="submit" value="Add Reminder" />
+        <a class="btn btn-dark rounded ml-2" routerLink="/home">Cancel</a>
+    </form>
+
+    <div *ngIf="notes">
+        <div *ngFor="let note of notes">
+            {{note.reminder}}
+        </div>
+    </div>
+</div>
