@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
           
         } else {
           //else user found reroute to home
-          console.log("angular register stringifydata" + data)
+          console.log("register in login.component navigating to /home")
           this._router.navigate(['/home']);
         }
       },

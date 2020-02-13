@@ -2,6 +2,7 @@
 const mysql = require('mysql');
 const config = require('../config/config.js');
 let connection = mysql.createConnection(config);
+const bcrypt = require('bcrypt');
 // const mongoose = require('mongoose');
 // const Note = mongoose.model('Note')
 
@@ -13,27 +14,77 @@ let connection = mysql.createConnection(config);
 // } catch(e) {
 //     console.log('Error:', e.stack);
 // }
-module.exports = {
 
-    // createUser: (req, res) => {
-    //     //inserts but doesn't return data
-    //     var sql = "INSERT INTO user(username, password) VALUES(?, ?)";
-    //     connection.query(sql, [req.body.username, req.body.password], function (err, results) {
-    //         if (err) { throw err }
-    //         console.log("test")
-    //         console.log(results.insertId)
-    //         res.json(results)
-    //     });
-    // },
-    register: (req, res) => {
-        //keep bcrypt hashing logic on backend
+
+//setup for promise-ifying queries Database.query()
+class Database {
+    constructor(config) {
+        this.connection = mysql.createConnection(config);
+    }
+    query(sql, args) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(sql, args, (err, rows) => {
+                if (err)
+                    return reject(err);
+                resolve(rows);
+            });
+        });
+    }
+    close() {
+        return new Promise((resolve, reject) => {
+            this.connection.end(err => {
+                if (err)
+                    return reject(err);
+                resolve();
+            });
+        });
+    }
+}
+/*
+//optional query using connection.execute to handle errors where config is let config = mysql.createConnection(config);
+//we have to use external variables to hold the data, since when chaining, all you have reference to is the data from the previous query
+let someRows, otherRows;
+Database.execute( config,
+    database => database.query( 'SELECT * FROM some_table' )
+    .then( rows => {
+        someRows = rows;
+        return database.query( 'SELECT * FROM other_table' )
+    } )
+    .then( rows => {
+        otherRows = rows;
+    } )
+).then( () => {
+    // do something with someRows and otherRows
+} ).catch( err => {
+    // handle the error
+} );
+
+//could also try (from comments)
+async function getRows() {
+    const someRows = await database.query( 'SELECT * FROM some_table' )
+    .then( rows => rows )
+    const otherRows = await database.query( 'SELECT * FROM other_table' )
+    .then( rows => rows );
+    return { someRows: someRows, otherRows: otherRows }
+}
+
+*/
+module.exports = {
+    register: async (req, res) => {
         var sql = "SELECT * FROM user WHERE username = (?) AND password = (?)";
         //if values returned, user already exists
         console.log("register req.body: " + JSON.stringify(req.body))
-        //pass in 
-        connection.query(sql, [req.body.username, req.body.password], function (err, results) {
+        //bcrypt here
+        await connection.query(sql, [req.body.username, req.body.password], function (err, results) {
             console.log(JSON.stringify("pre-existing users for given username and password: " + JSON.stringify(results)))
             if (err) { throw err }
+            //if a user already exists
+            else if (results.length > 0) {
+                //log anyone out who's already logged in
+                req.session.uid = null;
+                //return false
+                res.json({ login: false })
+            }
             // console.log(results)
             else if (results.length == 0) {//if there are no users, the results.length is going to be zero and you can create a user
                 var sql1 = "INSERT INTO user(username, password) VALUES(?, ?)";
@@ -66,48 +117,15 @@ module.exports = {
             }
 
         });
-        // connection.query(sql, [req.body.username, req.body.password], function (err, results) {
-        //     console.log(JSON.stringify("pre-existing users for given username and password: "+JSON.stringify(results)))
-        //     if (err) {throw err}
-        //     // console.log(results)
-        //     else if (results.length == 0) {//if there are no users, the results.length is going to be zero and you can create a user
-        //         var sql1 = "INSERT INTO user(username, password) VALUES(?, ?)";
-        //         connection.query(sql1, [req.body.username, req.body.password], function (err, result) {
-        //             console.log("Registration insert result:  "+JSON.stringify(result.changedRows, result.affectedRows))
-        //             if (err) { throw err }
-        //             //need one more query to actually recieve the user id and set session
-        //             else {
-        //                 var sql = "SELECT * FROM user WHERE username = (?) AND password = (?) LIMIT 1";
-        //                 connection.query(sql, [req.body.username, req.body.password], function (err, results) {
-
-        //                     if (err) { throw err }
-        //                     //set session user id 
-        //                     else {
-
-        //                         console.log("Registration select after insertion: "+results[0].id)
-        //                         req.session.uid = results[0].id
-        //                         console.log(req.session.uid)
-
-        //                     }
-        //                 })
-        //                 res.json({ login: true })
-        //             }
-        //         })
-        //     } else {
-        //         //if response, return uniqueness error
-        //         res.json({ login: false, message: "ERROR user already exists" })
-        //     }
-
-        // });
     },
-    login: (req, res) => {
+    login: async (req, res) => {
         //should actually use bcrypt here to keep the hash logic on backend
         console.log("login username: " + JSON.stringify(req.body.username))
         console.log("login password: " + JSON.stringify(req.body.password))
 
         var sql = "SELECT * FROM user WHERE username = ? AND password = ? LIMIT 1";
         //cannot stringify, need to pass in the the body.username and password as is
-        connection.query(sql, [req.body.username, req.body.password], function (err, results) {
+        await connection.query(sql, [req.body.username, req.body.password], function (err, results) {
             console.log("login result: " + results[0])
             if (err) {
                 //find format and response types for mysql errors
@@ -118,8 +136,6 @@ module.exports = {
             }
             else {
                 //use session to hold user id once logged in
-                //req.session.uid = results[0].id
-
                 req.session.uid = results[0].id
                 console.log("login assining session id: " + results[0].id)
                 // res.json({ userid: results[0].id })
@@ -141,11 +157,10 @@ module.exports = {
                 //if query gives nothing
                 else if (results.length === 0) {
                     console.log("in getUser retrieving user: " + req.session.uid)
-                    console.log("in getUser results length ===0: "+results)
+                    console.log("in getUser results length ===0: " + results)
                     res.json({ userId: false })
                 }
                 //[ RowDataPacket { id: 1, username: 'daryl1', password: 'pass1' } ]
-
                 else {
                     console.log("user data returned: " + JSON.stringify(results))
                     res.json({ userId: results[0].id, userName: results[0].username })

@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
     this._httpService.getUser()
       .subscribe( data => {
        console.log("data length in getUser: "+Object.keys(data).length)
-       console.log("data in getUser: "+data)
+       console.log("data in getUser: "+JSON.stringify(data))
 
        //if nothing returns aka no such user
         if (Object.keys(data).length === 0) {
