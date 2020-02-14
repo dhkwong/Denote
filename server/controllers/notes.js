@@ -43,6 +43,8 @@ class Database {
 /*
 //optional query using connection.execute to handle errors where config is let config = mysql.createConnection(config);
 //we have to use external variables to hold the data, since when chaining, all you have reference to is the data from the previous query
+//With .query(), parameter substitution is handled on the client, including objects which let data = req.body is in the above examples.
+//With .execute() prepared statement parameters are sent from the client as a serialized string and handled by the server. Since let data = req.body is an object, that's not going to work.
 let someRows, otherRows;
 Database.execute( config,
     database => database.query( 'SELECT * FROM some_table' )

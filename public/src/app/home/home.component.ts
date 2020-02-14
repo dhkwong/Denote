@@ -11,9 +11,10 @@ import { NgForm } from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
   //save userID
-  user:any;
+  replyerrors: any;
+  user: any;
   notes: any = [];
-  newnote:any;
+  newnote: any;
 
   constructor(
     private _route: ActivatedRoute,
@@ -23,32 +24,32 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     //need this.newnote to match the format and data we want to send as js object to the backend..which I may not need since I just take in the new form as a js object to pass to the api
-    this.newnote = {reminder:"", userId:""};
+    this.newnote = { reminder: "", userId: "" };
     //need this.user to match the format of the object passed back from the api when querying the mysql server
     // this.user= {userId:"", username:""};
     this.getUser();
-    console.log("this.newnote"+JSON.stringify(this.newnote));
+    console.log("this.newnote" + JSON.stringify(this.newnote));
   }
   getUser() {
     this._httpService.getUser()
-      .subscribe( data => {
-       console.log("data length in getUser: "+Object.keys(data).length)
-       console.log("data in getUser: "+JSON.stringify(data))
+      .subscribe(data => {
+        console.log("data length in getUser: " + Object.keys(data).length)
+        console.log("data in getUser: " + JSON.stringify(data))
 
-       //if nothing returns aka no such user
+        //if nothing returns aka no such user
         if (Object.keys(data).length === 0) {
           this._router.navigate(['/login'])
-        } 
+        }
         //if registration is false aka preexisting user
-        else if(JSON.stringify(data)==='{"userId":false}'){
+        else if (JSON.stringify(data) === '{"userId":false}') {
           this._router.navigate(['/login'])
         }
         else {
           //else assign userid and name
-          console.log("first data: "+JSON.stringify(data))
+          console.log("first data: " + JSON.stringify(data))
           this.user = data;
-          console.log("this.user"+JSON.stringify(this.user));
-          this.newnote.userId = this.user.userId 
+          console.log("this.user" + JSON.stringify(this.user));
+          this.newnote.userId = this.user.userId
         }
       },
         error => {
@@ -90,13 +91,49 @@ export class HomeComponent implements OnInit {
     })
 
   }
-  */ 
+  */
   addNote(form: NgForm) {
+    //or this.newNote.reminder = form.reminder if I wanted to pass all data as one object
+    console.log("addnote form: " + JSON.stringify(form));
+    const observable = this._httpService.createNote(form, this.user.userId);
+    observable.subscribe({
+      next() {
+        this._router.navigate(['/home'])
+      },
+      error: error => {
+        console.log("addNote error: " + error)
+        this.replyerrors = error;
+      }
 
+    })
   }
-  deleteNote(){
-  }
-  updateNote() {
+  deleteNote(noteId: any) {
+    console.log("deleteNote noteId: " + noteId);
+    const observable = this._httpService.deleteNote(noteId);
+    observable.subscribe({
+      next() {
+        this._router.navigate(['/home'])
+      },
+      error: error => {
+        console.log("deleteNote error: " + error)
+        this.replyerrors = error;
+      }
 
+    })
   }
+  // add updateNote in api
+  // updateNote(form: NgForm) {
+  //   const observable = this._httpService.updateNote(form);
+  //   observable.subscribe({
+  //     next() {
+  //       this._router.navigate(['/home'])
+
+  //     },
+  //     error: error => {
+  //       this.replyerrors = error;
+  //     }
+  //   })
+
+  // }
+
 }

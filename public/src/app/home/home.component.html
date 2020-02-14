@@ -7,9 +7,9 @@
 
     <form (submit)="addNote(noteValue)" #noteValue="ngForm">
 
-        <label for="reminder">reminder</label>
+        <label for="reminder">Add Reminder</label>
         <p></p>
-        <textarea type="text" name="reminder" id="reminder" ngModel></textarea>
+        <textarea type="text" name="reminder" id="reminder" placeholder="New Reminder Here" ngModel></textarea>
         <p></p>
         <input type="submit" value="Add Reminder" />
         <a class="btn btn-dark rounded ml-2" routerLink="/home">Cancel</a>
@@ -17,7 +17,15 @@
 
     <div *ngIf="notes">
         <div *ngFor="let note of notes">
-            {{note.reminder}}
+
+            <form (submit)="updateNote(updatevalue)" #noteValue="ngForm">
+                <input type="hidden" name="noteId" id= "noteId" value = "{{noteId}}">
+                <label for="updatereminder">Reminder</label>
+                <p></p>
+                <textarea type="text" name="updatereminder" id="updatereminder" value="{{note.reminder}}"
+                    ngModel></textarea>
+
+            </form>
         </div>
     </div>
 </div>
