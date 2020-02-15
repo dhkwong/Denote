@@ -77,26 +77,38 @@ module.exports = {
         //if values returned, user already exists
         console.log("register req.body: " + JSON.stringify(req.body))
         //bcrypt here
-        await connection.query(sql, [req.body.username, req.body.password], function (err, results) {
+        var hashedpass
+        bcrypt.hash(req.body.password, 10, function (err, hash) {
+            if (err) {
+                throw err;
+            }
+            else {
+                hashedpass = hash;
+                testhash = {hash:hashedpass};
+                console.log("hashing pass to: "+hashedpass)
+            }
+        })
+        connection.query(sql, [req.body.username, hashedpass], function (err, results) {
             console.log(JSON.stringify("pre-existing users for given username and password: " + JSON.stringify(results)))
             if (err) { throw err }
             //if a user already exists
             else if (results.length > 0) {
                 //log anyone out who's already logged in
                 req.session.uid = null;
+                
                 //return false
                 res.json({ login: false })
             }
             // console.log(results)
             else if (results.length == 0) {//if there are no users, the results.length is going to be zero and you can create a user
                 var sql1 = "INSERT INTO user(username, password) VALUES(?, ?)";
-                connection.query(sql1, [req.body.username, req.body.password], function (err, result) {
+                connection.query(sql1, [req.body.username, hashedpass], function (err, result) {
                     console.log("Registration insert result:  " + JSON.stringify(result))
                     try {
                         //select user that was just created
                         var sql = "SELECT * FROM user WHERE username = (?) AND password = (?) LIMIT 1";
-                        connection.query(sql, [req.body.username, req.body.password], function (err, results) {
-
+                        connection.query(sql, [req.body.username, testhash.hash], function (err, results) {
+                            console.log("selecting user just created: "+ JSON.stringify(results))
                             if (err) { throw err }
                             //set session user id 
                             else {
@@ -119,6 +131,48 @@ module.exports = {
             }
 
         });
+        // await connection.query(sql, [req.body.username, req.body.password], function (err, results) {
+        //     console.log(JSON.stringify("pre-existing users for given username and password: " + JSON.stringify(results)))
+        //     if (err) { throw err }
+        //     //if a user already exists
+        //     else if (results.length > 0) {
+        //         //log anyone out who's already logged in
+        //         req.session.uid = null;
+        //         //return false
+        //         res.json({ login: false })
+        //     }
+        //     // console.log(results)
+        //     else if (results.length == 0) {//if there are no users, the results.length is going to be zero and you can create a user
+        //         var sql1 = "INSERT INTO user(username, password) VALUES(?, ?)";
+        //         connection.query(sql1, [req.body.username, req.body.password], function (err, result) {
+        //             console.log("Registration insert result:  " + JSON.stringify(result))
+        //             try {
+        //                 //select user that was just created
+        //                 var sql = "SELECT * FROM user WHERE username = (?) AND password = (?) LIMIT 1";
+        //                 connection.query(sql, [req.body.username, req.body.password], function (err, results) {
+
+        //                     if (err) { throw err }
+        //                     //set session user id 
+        //                     else {
+        //                         console.log("Registration select after insertion: " + results[0].id)
+        //                         req.session.uid = JSON.stringify(results[0].id)
+        //                         console.log(req.session.uid)
+
+        //                         res.json({ login: true })
+        //                     }
+        //                 })
+
+        //             } catch (error) {
+        //                 res.json(error);
+        //             }
+
+        //         });
+        //     } else {
+        //         //if response, return uniqueness error
+        //         res.json({ login: false, message: "ERROR user already exists" })
+        //     }
+
+        // });
     },
     login: async (req, res) => {
         //should actually use bcrypt here to keep the hash logic on backend
