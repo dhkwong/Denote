@@ -9,6 +9,8 @@
 // });
 //sql connection logic for table creations go here
 
+
+
 let mysql = require('mysql');
 let config = require('../config/config.js');
 let connection = mysql.createConnection(config);
