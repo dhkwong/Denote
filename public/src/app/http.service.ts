@@ -61,4 +61,8 @@ export class HttpService {
     console.log('registering user in http service');
     return this._http.post(`/api/notes/user/register`, form)
   }
+  logout(){
+    console.log('logging out in http service');
+    return this._http.get(`/api/notes/user/logout`)
+  }
 }

@@ -121,6 +121,28 @@ export class HomeComponent implements OnInit {
 
     })
   }
+  logout() {
+    
+    try {
+      console.log("logging out in home component")
+      this._httpService.logout();
+    } catch (error) {
+      console.log("error logging out: " + error)
+    } finally{
+      this._router.navigate(['/login'])
+    }
+    // const observable = this._httpService.logout();
+    // observable.subscribe({
+    //   next(){
+    //     console.log("logging out")
+    //     this._router.navigate(['/login'])
+    //   },
+    //   error: error => {
+    //     console.log("error logging out: " + error)
+    //     this.replyerrors = error;
+    //   }
+    // })
+  }
   // add updateNote in api
   // updateNote(form: NgForm) {
   //   const observable = this._httpService.updateNote(form);

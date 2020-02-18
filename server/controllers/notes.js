@@ -78,7 +78,7 @@ module.exports = {
         //bcrypt here
 
         bcrypt.hash(req.body.password, 10, function (err, hash) {
-            
+
             if (err) {
                 throw err;
             }
@@ -176,12 +176,44 @@ module.exports = {
         console.log("login username: " + JSON.stringify(req.body.username))
         console.log("login password: " + JSON.stringify(req.body.password))
         var getusersql = "SELECT * FROM user WHERE username = ? LIMIT 1"
-        connection.query(getusersql, [req.body.username], function(error, results){
+        connection.query(getusersql, [req.body.username], function (error, results) {
             try {
                 //results = [{"id":0,"username":"uname","password":"hashedpassword"}]
-                console.log("getuser in login: "+results[0].password)
-            } catch (error) {
                 
+                console.log("getuser in login username: " + results[0].username)
+                console.log("getuser in login hashpass: " + results[0].password)
+                //compare the password given, and the hashed pass pulled from db
+                bcrypt.compare(req.body.password,results[0].password, function(){
+                    try {
+                        var sql = "SELECT * FROM user WHERE username = ? AND password = ? LIMIT 1";
+                        // //cannot stringify, need to pass in the the body.username and password as is
+                        connection.query(sql, [req.body.username, results[0].password], function (err, results) {
+                           
+                            console.log("login result: " + JSON.stringify(results))
+                            if (err) {
+                                //find format and response types for mysql errors
+                                const errors = Object.keys(err.errors).map(key => err.errors[key].message)
+                                res.status(400).json(errors)
+                            } else if (results.length === 0) {
+                                res.json({ login: false })
+                            }
+                            else {
+                                //use session to hold user id once logged in
+                                req.session.uid = results[0].id
+                                console.log("login assining session id: " + results[0].id)
+                                // res.json({ userid: results[0].id })
+                                res.json({ login: true })
+                            }
+        
+                        })
+                        
+                    } catch (err) {
+                        res.json(error)
+                    }
+
+                })
+            } catch (error) {
+                res.json(error)
             }
         })
         // var sql = "SELECT * FROM user WHERE username = ? AND password = ? LIMIT 1";
@@ -273,9 +305,14 @@ module.exports = {
 
         });
     },
-    logout: (req) => {
-        req.session.uid = null;
-    }
+    logout: (req,res) => {
+        console.log("pre-logout session ID: "+req.session.uid)
+        req.session.destroy(function(err){
+            if(err){ throw err }
+        });
+
+        res.redirect('/api/notes/user/login')
+    },
 
 
 

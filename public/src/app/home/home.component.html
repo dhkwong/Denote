@@ -1,7 +1,10 @@
-<p>home works!</p>
-
-<div *ngIf="user">
-    <h5>{{user.userName}} {{user.userId}}</h5>
+<div class="row">
+    <div *ngIf="user" class="col-5">
+        <h5>{{user.userName}} {{user.userId}}</h5>
+    </div>
+    <div>
+            <button (click)="logout()">Logout</button>
+    </div>
 </div>
 <div class="container-fluid">
 
@@ -19,7 +22,7 @@
         <div *ngFor="let note of notes">
 
             <form (submit)="updateNote(updatevalue)" #noteValue="ngForm">
-                <input type="hidden" name="noteId" id= "noteId" value = "{{noteId}}">
+                <input type="hidden" name="noteId" id="noteId" value="{{noteId}}">
                 <label for="updatereminder">Reminder</label>
                 <p></p>
                 <textarea type="text" name="updatereminder" id="updatereminder" value="{{note.reminder}}"
