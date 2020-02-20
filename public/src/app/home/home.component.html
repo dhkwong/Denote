@@ -1,18 +1,27 @@
+<div *ngIf = "replyerrors">
+    <div *ngFor="let error of replyerrors">
+        <h5>{{error}}</h5>
+
+
+    </div>
+
+
+</div>
+
 <div class="row">
     <div *ngIf="user" class="col-5">
         <h5>{{user.userName}} {{user.userId}}</h5>
     </div>
     <div>
-            <button (click)="logout()">Logout</button>
+            <button (click)="logout()" routerLink="/login">Logout</button>
     </div>
 </div>
 <div class="container-fluid">
-
     <form (submit)="addNote(noteValue)" #noteValue="ngForm">
 
         <label for="reminder">Add Reminder</label>
         <p></p>
-        <textarea type="text" name="reminder" id="reminder" placeholder="New Reminder Here" ngModel></textarea>
+        <textarea name="reminder" id="reminder" placeholder="New Reminder Here" ngModel></textarea>
         <p></p>
         <input type="submit" value="Add Reminder" />
         <a class="btn btn-dark rounded ml-2" routerLink="/home">Cancel</a>

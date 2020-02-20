@@ -35,7 +35,7 @@ export class HttpService {
   }
   createNote(reminder:any, userId:any){
     console.log('creating note in http service')
-    return this._http.post(`/api/notes,${userId}`,reminder)
+    return this._http.post(`/api/notes/${userId}`,reminder)
   }
   editNote(reminder:any, noteid:any){
     console.log('updating note in http service')

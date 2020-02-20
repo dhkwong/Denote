@@ -94,18 +94,22 @@ export class HomeComponent implements OnInit {
   */
   addNote(form: NgForm) {
     //or this.newNote.reminder = form.reminder if I wanted to pass all data as one object
-    console.log("addnote form: " + JSON.stringify(form));
-    const observable = this._httpService.createNote(form, this.user.userId);
-    observable.subscribe({
-      next() {
-        this._router.navigate(['/home'])
-      },
-      error: error => {
-        console.log("addNote error: " + error)
-        this.replyerrors = error;
-      }
-
-    })
+    // console.log("addnote form: " + JSON.stringify(form));
+    let formvalue = form
+    const observable = this._httpService.createNote(formvalue, this.user.userId);
+    observable.subscribe(data=>{
+      console.log(data);
+      // next() {
+      //   // this._router.navigate(['/home'])
+      // },
+      // error: error => {
+      //   console.log("addNote error: " + error)
+      //   this.replyerrors = error;
+      // }
+    },error=>{
+      console.log("addNote errors: "+error)
+    }
+    )
   }
   deleteNote(noteId: any) {
     console.log("deleteNote noteId: " + noteId);
@@ -124,13 +128,24 @@ export class HomeComponent implements OnInit {
   logout() {
     
     try {
-      console.log("logging out in home component")
-      this._httpService.logout();
+      
+      const observable = this._httpService.logout()
+      observable.subscribe({
+        next: data=>{
+          if(data === true){
+            console.log("logout = true")
+            this._router.navigate['/login']
+          } else{
+            console.log("logout = false")
+          }
+        }, error:error=>{
+          console.log("logout error: "+ error)
+          this.replyerrors=error;
+        }
+      })
     } catch (error) {
       console.log("error logging out: " + error)
-    } finally{
-      this._router.navigate(['/login'])
-    }
+    } 
     // const observable = this._httpService.logout();
     // observable.subscribe({
     //   next(){
