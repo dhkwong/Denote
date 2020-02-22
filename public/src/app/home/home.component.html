@@ -1,11 +1,7 @@
-<div *ngIf = "replyerrors">
+<div *ngIf="replyerrors">
     <div *ngFor="let error of replyerrors">
         <h5>{{error}}</h5>
-
-
     </div>
-
-
 </div>
 
 <div class="row">
@@ -13,7 +9,7 @@
         <h5>{{user.userName}} {{user.userId}}</h5>
     </div>
     <div>
-            <button (click)="logout()" routerLink="/login">Logout</button>
+        <button (click)="logout()" routerLink="/login">Logout</button>
     </div>
 </div>
 <div class="container-fluid">
@@ -23,20 +19,21 @@
         <p></p>
         <textarea name="reminder" id="reminder" placeholder="New Reminder Here" ngModel></textarea>
         <p></p>
-        <input type="submit" value="Add Reminder" />
+        <input type="submit" value="Add Reminder"/>
         <a class="btn btn-dark rounded ml-2" routerLink="/home">Cancel</a>
     </form>
 
-    <div *ngIf="notes">
-        <div *ngFor="let note of notes">
-
+    <div class="row" *ngIf="notes">
+        <div class="border border-dark rounded col-3 inline m-2" *ngFor="let note of notes">
+            note.reminder: {{note.reminder}}
+            noteId: {{note.noteid}}
             <form (submit)="updateNote(updatevalue)" #noteValue="ngForm">
-                <input type="hidden" name="noteId" id="noteId" value="{{noteId}}">
+                <input type="hidden" name="noteId" value="{{note.noteid}}" >
                 <label for="updatereminder">Reminder</label>
                 <p></p>
-                <textarea type="text" name="updatereminder" id="updatereminder" value="{{note.reminder}}"
-                    ngModel></textarea>
-
+                <textarea class="rounded" type="text" name="updatereminder"  value="{{note.reminder}}" >{{note.reminder}}</textarea>
+                <p></p>
+                <input class="btn btn-dark rounded mb-2" type="submit" value="Update Reminder" />
             </form>
         </div>
     </div>

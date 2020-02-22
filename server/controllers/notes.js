@@ -278,11 +278,12 @@ module.exports = {
     //for userid, probably should just pass in body vs in param/url
     createNote: (req, res) => {
         console.log("in createNote in notes.js")
-        var sql = "INSERT INTO note(reminder,user_id) VALUES reminder = (?), user_id = (?)"
+        let notevalues = {reminder:req.body.reminder, user_id:req.params.id}
+        var sql = "INSERT INTO note SET ?"
         //params is from url, req.body contains key-value pairs for data submitted in the request body.
         //the note reminder content itself will be stored within the req.body and the user id will be passed within the url 
         //might just need to pass in req.body vs req.body.reminder
-        connection.query(sql, [req.body.reminder, req.params.id], function (err, results) {
+        connection.query(sql, notevalues, function (err, results) {
             if (err) throw err
             console.log(req.body.reminder)
             console.log(req.params.id)
@@ -292,7 +293,7 @@ module.exports = {
     updateNote: (req, res) => {
         //might just need to pass in req.body vs req.body.reminder
         console.log("req.body.reminder: "+ JSON.stringify(req.body.reminder+ ", req.params.id: "+ req.params.id))
-        var sql = "UPDATE notes SET reminder = (?) WHERE id = (?)"
+        var sql = "UPDATE note SET reminder = (?) WHERE id = (?)"
         connection.query(sql, [req.body.reminder, req.params.id], function (err, results) {
             if (err) throw err
             console.log(reg.body.reminder)
@@ -301,7 +302,7 @@ module.exports = {
         });
     },
     deleteNote: (req, res) => {
-        var sql = "DELETE FROM notes WHERE id = (?)"
+        var sql = "DELETE FROM note WHERE id = (?)"
         connection.query(sql, [req.param.id], function (err) {
             if (err) throw err
         });

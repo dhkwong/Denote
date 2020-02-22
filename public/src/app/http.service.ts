@@ -28,9 +28,9 @@ export class HttpService {
     console.log("I'm retrieving a movie in findMovie: http.service",id);
     return this._http.get(`/api/movies/${id}`);
   }*/
-  getNotes(userId:any){
+  getNotes(){
     console.log('getting all notes in http service')
-    return this._http.get(`/api/notes/${userId}`)//backtick of `` required vs '' due to ES6 template interpolation for the string interpolation used here
+    return this._http.get(`/api/notes/all`)//backtick of `` required vs '' due to ES6 template interpolation for the string interpolation used here
 
   }
   createNote(reminder:any, userId:any){
