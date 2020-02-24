@@ -179,16 +179,16 @@ module.exports = {
         connection.query(getusersql, [req.body.username], function (error, results) {
             try {
                 //results = [{"id":0,"username":"uname","password":"hashedpassword"}]
-                
+
                 console.log("getuser in login username: " + results[0].username)
                 console.log("getuser in login hashpass: " + results[0].password)
                 //compare the password given, and the hashed pass pulled from db
-                bcrypt.compare(req.body.password,results[0].password, function(){
+                bcrypt.compare(req.body.password, results[0].password, function () {
                     try {
                         var sql = "SELECT * FROM user WHERE username = ? AND password = ? LIMIT 1";
                         // //cannot stringify, need to pass in the the body.username and password as is
                         connection.query(sql, [req.body.username, results[0].password], function (err, results) {
-                           
+
                             console.log("login result: " + JSON.stringify(results))
                             if (err) {
                                 //find format and response types for mysql errors
@@ -204,9 +204,9 @@ module.exports = {
                                 // res.json({ userid: results[0].id })
                                 res.json({ login: true })
                             }
-        
+
                         })
-                        
+
                     } catch (err) {
                         res.json(error)
                     }
@@ -278,21 +278,26 @@ module.exports = {
     //for userid, probably should just pass in body vs in param/url
     createNote: (req, res) => {
         console.log("in createNote in notes.js")
-        let notevalues = {reminder:req.body.reminder, user_id:req.params.id}
+        let notevalues = { reminder: req.body.reminder, user_id: req.params.id }
         var sql = "INSERT INTO note SET ?"
         //params is from url, req.body contains key-value pairs for data submitted in the request body.
         //the note reminder content itself will be stored within the req.body and the user id will be passed within the url 
         //might just need to pass in req.body vs req.body.reminder
-        connection.query(sql, notevalues, function (err, results) {
-            if (err) throw err
-            console.log(req.body.reminder)
-            console.log(req.params.id)
-            res.json(results)
-        });
+        if (/^\s*$/.test(req.body.reminder)) {
+            res.json({ error: "Reminder cannot be blank" })
+            // throw "Reminder cannot be blank"
+        } else {
+            connection.query(sql, notevalues, function (err, results) {
+                if (err) throw err
+                console.log(req.body.reminder)
+                console.log(req.params.id)
+                res.json(results)
+            });
+        }
     },
     updateNote: (req, res) => {
         //might just need to pass in req.body vs req.body.reminder
-        console.log("req.body.reminder: "+ JSON.stringify(req.body.reminder+ ", req.params.id: "+ req.params.id))
+        console.log("req.body.reminder: " + JSON.stringify(req.body.reminder + ", req.params.id: " + req.params.id))
         var sql = "UPDATE note SET reminder = (?) WHERE id = (?)"
         connection.query(sql, [req.body.reminder, req.params.id], function (err, results) {
             if (err) throw err
@@ -308,9 +313,9 @@ module.exports = {
         });
     },
     logout: (req, res) => {
-        console.log("pre-logout session ID: "+req.session.uid)
-        req.session.destroy(function(err){
-            if(err){ throw err }
+        console.log("pre-logout session ID: " + req.session.uid)
+        req.session.destroy(function (err) {
+            if (err) { throw err }
         })
         res.json(true);
     },

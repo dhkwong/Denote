@@ -122,7 +122,7 @@ export class HomeComponent implements OnInit {
 
       this._router.navigate(['/home'])
     }, error => {
-      console.log("addNote errors: " + error)
+      console.log("addNote errors: " + JSON.stringify(error))
     }
     )
   }
