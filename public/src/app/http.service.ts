@@ -33,6 +33,7 @@ export class HttpService {
     return this._http.get(`/api/notes/all`)//backtick of `` required vs '' due to ES6 template interpolation for the string interpolation used here
 
   }
+  //could also simply pass it all as a single form variable like with login and register user
   createNote(reminder:any, userId:any){
     console.log('creating note in http service')
     return this._http.post(`/api/notes/${userId}`,reminder)

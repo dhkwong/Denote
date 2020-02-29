@@ -307,10 +307,13 @@ module.exports = {
         });
     },
     deleteNote: (req, res) => {
-        var sql = "DELETE FROM note WHERE id = (?)"
-        connection.query(sql, [req.param.id], function (err) {
+       
+        var sql = "DELETE FROM note WHERE noteid = (?)"
+        connection.query(sql, [req.params.id], function (err) {
             if (err) throw err
-        });
+        })
+        res.json(true);
+        ;
     },
     logout: (req, res) => {
         console.log("pre-logout session ID: " + req.session.uid)

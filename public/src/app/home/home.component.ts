@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
   user: any;
   notes: any = [];
   newnote: any;
+  updatednote:any;
 
   constructor(
     private _route: ActivatedRoute,
@@ -25,6 +26,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     //need this.newnote to match the format and data we want to send as js object to the backend..which I may not need since I just take in the new form as a js object to pass to the api
     this.newnote = { reminder: "", userId: "" };
+    this.updatednote = {reminder: "", userId:""};
     //need this.user to match the format of the object passed back from the api when querying the mysql server
     // this.user= {userId:"", username:""};
     this.getUser();
@@ -117,9 +119,9 @@ export class HomeComponent implements OnInit {
       //   console.log("addNote error: " + error)
       //   this.replyerrors = error;
       // }
-      //in order to refresh the dom. May not be the best way to structure this.
+      //in order to refresh the dom. May not be the best way to structure this, but angular doesn't refresh the dom automatically unless
+      //the url itself actually changes
       this.ngOnInit();
-
       this._router.navigate(['/home'])
     }, error => {
       console.log("addNote errors: " + JSON.stringify(error))
@@ -127,7 +129,8 @@ export class HomeComponent implements OnInit {
     )
   }
   deleteNote(noteId: any) {
-    console.log("deleteNote noteId: " + noteId);
+    console.log("deleteNote noteId: " + noteId.value);
+    console.log("deleteNote noteId: " + JSON.stringify(noteId.value))
     const observable = this._httpService.deleteNote(noteId);
     observable.subscribe({
       next() {
@@ -140,10 +143,26 @@ export class HomeComponent implements OnInit {
 
     })
   }
+  //takes in a form holding the noteId as well as the updated reminder values to be changed
+  updateNote(form:NgForm){
+    console.log("updateNote formv: "+JSON.stringify(form.value.noteid))
+    console.log("updateNote form: "+form.value.reminder)
+    // let reminder = form.value.reminder
+    // let noteId = form.value.noteId
+    // const observable = this._httpService.editNote(reminder,noteId);
+    // observable.subscribe({
+    //   next(){
+    //     // this.ngOnInit();
+
+    //   },
+    //   error:error=>{
+    //     console.log("updateNote error: "+error)
+    //     this.replyerrors = error;
+    //   }
+    // })
+  }
   logout() {
-
     try {
-
       const observable = this._httpService.logout()
       observable.subscribe({
         next: data => {
