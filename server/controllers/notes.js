@@ -83,8 +83,6 @@ module.exports = {
                 throw err;
             }
             else {
-                //should place connection in here
-                console.log("hashing pass to: " + hash)
                 var sql = "SELECT * FROM user WHERE username = (?) AND password = (?)";
                 connection.query(sql, [req.body.username, hash], function (err, results) {
                     if (err) { throw err }
@@ -96,10 +94,8 @@ module.exports = {
                         //return false
                         res.json({ login: false })
                     }
-                    // console.log(results)
                     else if (results.length == 0) {//if there are no users, the results.length is going to be zero and you can create a user
                         var sql1 = "INSERT INTO user(username, password) VALUES(?, ?)";
-                        console.log("test hashed: " + hash)
                         connection.query(sql1, [req.body.username, hash], function (err, result) {
                             console.log("Registration insert result:  " + JSON.stringify(result))
                             try {
@@ -179,16 +175,12 @@ module.exports = {
         connection.query(getusersql, [req.body.username], function (error, results) {
             try {
                 //results = [{"id":0,"username":"uname","password":"hashedpassword"}]
-
-                console.log("getuser in login username: " + results[0].username)
-                console.log("getuser in login hashpass: " + results[0].password)
                 //compare the password given, and the hashed pass pulled from db
                 bcrypt.compare(req.body.password, results[0].password, function () {
                     try {
                         var sql = "SELECT * FROM user WHERE username = ? AND password = ? LIMIT 1";
                         // //cannot stringify, need to pass in the the body.username and password as is
                         connection.query(sql, [req.body.username, results[0].password], function (err, results) {
-
                             console.log("login result: " + JSON.stringify(results))
                             if (err) {
                                 //find format and response types for mysql errors
@@ -204,9 +196,7 @@ module.exports = {
                                 // res.json({ userid: results[0].id })
                                 res.json({ login: true })
                             }
-
                         })
-
                     } catch (err) {
                         res.json(error)
                     }
@@ -296,8 +286,6 @@ module.exports = {
         }
     },
     updateNote: (req, res) => {
-        //might just need to pass in req.body vs req.body.reminder
-        console.log("req.body.reminder: " + JSON.stringify(req.body)+ ", req.params.id: " + req.params.id)
         var sql = "UPDATE note SET reminder = (?) WHERE noteid = (?)"
         connection.query(sql, [req.body.reminder, req.params.id], function (err, results) {
             if (err) {throw err}
@@ -306,14 +294,11 @@ module.exports = {
                 // throw "Reminder cannot be blank"
             }
             else{
-            console.log(req.body.reminder)
-            console.log(req.params.id)
             res.json(results)
             }
         });
     },
     deleteNote: (req, res) => {
-
         var sql = "DELETE FROM note WHERE noteid = (?)"
         connection.query(sql, [req.params.id], function (err) {
             if (err) throw err
@@ -329,7 +314,7 @@ module.exports = {
         res.json(true);
     },
     getNote: (req, res) => {
-        console.log('getting note in notes.js with ID of: ' + req.params.id)
+        console.log('getting note in notes.js')
         var sql = "SELECT * FROM note WHERE noteid = (?) AND user_id = (?)"
         //if user isn't logged in
         if (req.session.uid == null) {
@@ -339,7 +324,6 @@ module.exports = {
                 if (err) {
                     throw err
                 } else {
-                    console.log("getNote data: "+ result)
                     res.json(result)
                 }
             })

@@ -22,7 +22,6 @@ export class UpdateComponent implements OnInit {
   ngOnInit() {
     this._route.params.subscribe((params: Params) => {  //retrieves the parameters from the route
       this.reminder = {noteId:"", reminder:""}
-      console.log("params[id]", params['id'])
       this.reminderid = params['id']
       this.getNote()
     });
@@ -30,15 +29,11 @@ export class UpdateComponent implements OnInit {
 
   getNote(){
     this._httpService.getNote(this.reminderid).subscribe(data=>{
-      console.log("update component getNote returning data"+JSON.stringify(data))
       this.reminder = {noteId:data[0].noteid, reminder: data[0].reminder};
       console.log(this.reminder)
     })
   }
   updateNote(form:NgForm){
-    console.log("updateNote values: "+JSON.stringify(form.value))
-    console.log("updateNote noteid: "+form.value.noteid)
-    console.log("updateNote reminder: "+form.value.reminder)
     var reminder = form.value
     var noteId = form.value.noteid
     this._httpService.editNote(reminder,noteId).subscribe({
@@ -63,12 +58,12 @@ export class UpdateComponent implements OnInit {
             console.log("logout = false")
           }
         }, error: error => {
-          console.log("logout error: " + error)
+          console.log("logout error: " + JSON.stringify(error))
           this.replyerrors = error;
         }
       })
     } catch (error) {
-      console.log("error logging out: " + error)
+      console.log("error logging out: " + JSON.stringify(error))
     }
   }
 }

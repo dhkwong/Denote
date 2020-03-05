@@ -53,13 +53,11 @@ export class HttpService {
   //retrieves stored userID 
   getUser(){ 
     console.log('retrieving user in http service');
-    
     return this._http.get(`/api/notes/user`)
   }
 
   loginUser(form:any){
     console.log('logging in user in http service')
-
     return this._http.post(`/api/notes/user/login`,form)
   }
   registerUser(form:any){

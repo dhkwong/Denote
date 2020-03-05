@@ -31,18 +31,12 @@ export class HomeComponent implements OnInit {
     // this.user= {userId:"", username:""};
     this.getUser();
     this.getNotes();
-    // this._route.params.subscribe(val => {  //retrieves the parameters from the route
-    //   this.getUser();
-    //   this.getNotes();
-    // });
+
 
   }
   getUser() {
     this._httpService.getUser()
       .subscribe(data => {
-        console.log("data length in getUser: " + Object.keys(data).length)
-        console.log("data in getUser: " + JSON.stringify(data))
-
         //if nothing returns aka no such user
         if (Object.keys(data).length === 0) {
           this._router.navigate(['/login'])
@@ -58,22 +52,15 @@ export class HomeComponent implements OnInit {
           this.user = data;
           console.log("this.user" + JSON.stringify(this.user));
           this.newnote.userId = this.user.userId
-          // if(this.user.userId!= null){
-          //   this.getNotes();
-          // }
         }
       },
         error => {
-
           this._router.navigate(['/login'])
           //store userId to get all notes with pertaining to user
         }
       );
   }
-
-
   getNotes() {
-
     this._httpService.getNotes()
       .subscribe(data => {
         console.log('got notes in home.component.ts' + JSON.stringify(data))
@@ -87,28 +74,8 @@ export class HomeComponent implements OnInit {
       );
 
   }
-  /*
-  //use of observable from rxjs
-  addReview(reviewformdata) {
-
-    const observable = this._httpService.editMovie(this.movie, reviewformdata);
-    observable.subscribe({
-      next: data => { //listens for the next data
-        console.log("added movie in addMovie component", data)
-        this._router.navigate(['/movie'])
-      },
-      error: error => {
-        console.log("error", error)
-        this.replyerrors = error.error;
-      }
-    })
-
-  }
-  */
   addNote(form: NgForm) {
-    //or this.newNote.reminder = form.reminder if I wanted to pass all data as one object
-    // console.log("addnote form: " + JSON.stringify(form));
-    // let formvalue = form
+
     const observable = this._httpService.createNote(form.value, this.user.userId);
     observable.subscribe(data => {
       console.log(data);
@@ -122,8 +89,6 @@ export class HomeComponent implements OnInit {
     )
   }
   deleteNote(noteId: any) {
-    console.log("deleteNote noteId: " + noteId.value);
-    console.log("deleteNote noteId: " + JSON.stringify(noteId.value))
     const observable = this._httpService.deleteNote(noteId);
     observable.subscribe({
       next() {
@@ -135,24 +100,6 @@ export class HomeComponent implements OnInit {
       }
 
     })
-  }
-  //takes in a form holding the noteId as well as the updated reminder values to be changed
-  updateNote(form:NgForm){
-    console.log("updateNote formv: "+JSON.stringify(form.value.noteid))
-    console.log("updateNote form: "+form.value.reminder)
-    // let reminder = form.value.reminder
-    // let noteId = form.value.noteId
-    // const observable = this._httpService.editNote(reminder,noteId);
-    // observable.subscribe({
-    //   next(){
-    //     // this.ngOnInit();
-
-    //   },
-    //   error:error=>{
-    //     console.log("updateNote error: "+error)
-    //     this.replyerrors = error;
-    //   }
-    // })
   }
   logout() {
     try {
@@ -173,31 +120,5 @@ export class HomeComponent implements OnInit {
     } catch (error) {
       console.log("error logging out: " + error)
     }
-    // const observable = this._httpService.logout();
-    // observable.subscribe({
-    //   next(){
-    //     console.log("logging out")
-    //     this._router.navigate(['/login'])
-    //   },
-    //   error: error => {
-    //     console.log("error logging out: " + error)
-    //     this.replyerrors = error;
-    //   }
-    // })
   }
-  // add updateNote in api
-  // updateNote(form: NgForm) {
-  //   const observable = this._httpService.updateNote(form);
-  //   observable.subscribe({
-  //     next() {
-  //       this._router.navigate(['/home'])
-
-  //     },
-  //     error: error => {
-  //       this.replyerrors = error;
-  //     }
-  //   })
-
-  // }
-
 }
