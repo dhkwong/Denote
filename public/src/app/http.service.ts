@@ -33,13 +33,17 @@ export class HttpService {
     return this._http.get(`/api/notes/all`)//backtick of `` required vs '' due to ES6 template interpolation for the string interpolation used here
 
   }
+  getNote(reminderid:any){
+    console.log('getting one note in http service')
+    return this._http.get(`/api/notes/${reminderid}`)
+  }
   //could also simply pass it all as a single form variable like with login and register user
   createNote(reminder:any, userId:any){
     console.log('creating note in http service')
     return this._http.post(`/api/notes/${userId}`,reminder)
   }
   editNote(reminder:any, noteid:any){
-    console.log('updating note in http service')
+    console.log('updating note in http service. reminder: '+reminder)
     return this._http.put(`/api/notes/${noteid}`,reminder)
   }
   deleteNote(noteId:any){

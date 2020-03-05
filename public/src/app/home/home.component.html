@@ -22,20 +22,12 @@
         <input type="submit" value="Add Reminder"/>
         <a class="btn btn-dark rounded ml-2" routerLink="/home">Cancel</a>
     </form>
-
     <div class="row" *ngIf="notes">
-        <div class="border border-dark rounded col-3 inline m-2" *ngFor="let note of notes">
-            note.reminder: {{note.reminder}}
-            noteId: {{note.noteid}}
-            <form class="mb-3" (submit)="updateNote(updateValue)" #updateValue="ngForm">
-                <input type="hidden" name="noteId" id="noteid" value="{{note.noteid}}" >
-                <label for="updatereminder">Reminder</label>
-                <p></p>
-                <textarea class="rounded" type="text" name="updatereminder" id="reminder"  value="{{note.reminder}}" >{{note.reminder}}</textarea>
-                <p></p>
-                <input class="btn btn-dark rounded mb-2" type="submit" value="Update Reminder" />
-                <button (click) = "deleteNote(note.noteid)" routerLink="/home">Delete Reminder</button>
-            </form>
+            <div class="border border-dark rounded col-3 inline m-2 p-4" *ngFor="let note of notes">
+                reminder: {{note.reminder}}
+               
+                <button class="btn btn-dark rounded mb-2" routerLink="/home/{{note.noteid}}">Update</button>
+                    <button (click) = "deleteNote(note.noteid)" routerLink="/home">Delete Reminder</button>
+            </div>
         </div>
-    </div>
 </div>

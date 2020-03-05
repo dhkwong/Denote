@@ -297,23 +297,29 @@ module.exports = {
     },
     updateNote: (req, res) => {
         //might just need to pass in req.body vs req.body.reminder
-        console.log("req.body.reminder: " + JSON.stringify(req.body.reminder + ", req.params.id: " + req.params.id))
-        var sql = "UPDATE note SET reminder = (?) WHERE id = (?)"
+        console.log("req.body.reminder: " + JSON.stringify(req.body)+ ", req.params.id: " + req.params.id)
+        var sql = "UPDATE note SET reminder = (?) WHERE noteid = (?)"
         connection.query(sql, [req.body.reminder, req.params.id], function (err, results) {
-            if (err) throw err
-            console.log(reg.body.reminder)
+            if (err) {throw err}
+            else if (/^\s*$/.test(req.body.reminder)) {
+                res.json({ error: "Reminder cannot be blank" })
+                // throw "Reminder cannot be blank"
+            }
+            else{
+            console.log(req.body.reminder)
             console.log(req.params.id)
             res.json(results)
+            }
         });
     },
     deleteNote: (req, res) => {
-       
+
         var sql = "DELETE FROM note WHERE noteid = (?)"
         connection.query(sql, [req.params.id], function (err) {
             if (err) throw err
         })
         res.json(true);
-        ;
+
     },
     logout: (req, res) => {
         console.log("pre-logout session ID: " + req.session.uid)
@@ -322,8 +328,22 @@ module.exports = {
         })
         res.json(true);
     },
-
-
-
+    getNote: (req, res) => {
+        console.log('getting note in notes.js with ID of: ' + req.params.id)
+        var sql = "SELECT * FROM note WHERE noteid = (?) AND user_id = (?)"
+        //if user isn't logged in
+        if (req.session.uid == null) {
+            res.json(false);
+        } else {
+            connection.query(sql, [req.params.id, req.session.uid], function (err, result) {
+                if (err) {
+                    throw err
+                } else {
+                    console.log("getNote data: "+ result)
+                    res.json(result)
+                }
+            })
+        }
+    }
 }
 

@@ -112,13 +112,6 @@ export class HomeComponent implements OnInit {
     const observable = this._httpService.createNote(form.value, this.user.userId);
     observable.subscribe(data => {
       console.log(data);
-      // next() {
-      //   // this._router.navigate(['/home'])
-      // },
-      // error: error => {
-      //   console.log("addNote error: " + error)
-      //   this.replyerrors = error;
-      // }
       //in order to refresh the dom. May not be the best way to structure this, but angular doesn't refresh the dom automatically unless
       //the url itself actually changes
       this.ngOnInit();

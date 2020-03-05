@@ -1,0 +1,21 @@
+<p>update works!</p>
+<div class="row">
+        <div class="float-right">
+            <button (click)="logout()" routerLink="/login">Logout</button>
+        </div>
+    </div>
+
+<div *ngIf="reminder">
+    <div class="border border-dark rounded col-3 inline m-2 p-3">
+
+        <p>Form value: {{ reminder | json }}</p>
+        <form #update="ngForm" (submit)="updateNote(update)" >
+                <input type="hidden" name="noteid"  [(ngModel)] = "reminder.noteId" > 
+                <!-- <input name="reminder" placeholder ="{{reminder[0].reminder}}" ngModel> -->
+                <input type="text" name="reminder" [(ngModel)]="reminder.reminder" placeholder="Description Here" />
+                <button>Submit</button>
+                <button routerLink="/home">Cancel</button>
+        </form>
+    </div>
+
+</div>
