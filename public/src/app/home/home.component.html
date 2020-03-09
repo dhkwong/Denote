@@ -5,29 +5,32 @@
 </div>
 
 <div class="row">
-    <div *ngIf="user" class="col-5">
-        <h5>{{user.userName}} {{user.userId}}</h5>
+    <div *ngIf="user" class="col-9">
+        <h5>Welcome Back, {{user.userName}}</h5>
     </div>
     <div>
-        <button (click)="logout()" routerLink="/login">Logout</button>
+        <button class="btn btn-dark  rounded" (click)="logout()" routerLink="/login">Logout</button>
     </div>
 </div>
-<div class="container-fluid">
-    <form (submit)="addNote(noteValue)" #noteValue="ngForm">
 
-        <label for="reminder">Add Reminder</label>
-        <p></p>
-        <textarea name="reminder" id="reminder" placeholder="New Reminder Here" ngModel></textarea>
-        <p></p>
-        <input type="submit" value="Add Reminder"/>
-        <a class="btn btn-dark rounded ml-2" routerLink="/home">Cancel</a>
-    </form>
-    <div class="row" *ngIf="notes">
-            <div class="border border-dark rounded col-3 inline m-2 p-4" *ngFor="let note of notes">
-                reminder: {{note.reminder}}
-               
-                <button class="btn btn-dark rounded mb-2" routerLink="/home/{{note.noteid}}">Update</button>
-                    <button (click) = "deleteNote(note.noteid)" routerLink="/home">Delete Reminder</button>
+<div class="container-fluid">
+    <div class="row border border-dark rounded col-3 mt-1 mb-1 ml-2 p-3">
+        <form (submit)="addNote(noteValue)" #noteValue="ngForm">
+            <label for="reminder">Add Reminder</label>
+            <p></p>
+            <textarea name="reminder" id="reminder" placeholder="New Reminder Here" ngModel></textarea>
+            <p></p>
+            <input class="btn btn-dark rounded ml-2" type="submit" value="Add Reminder" />
+            <a class="btn btn-light rounded ml-2" routerLink="/home">Cancel</a>
+        </form>
+    </div>
+    <div class="row ml-1" *ngIf="notes">
+        <div class="border border-dark rounded col-3 inline m-2 p-4" *ngFor="let note of notes">
+            <div class="col5 m-3">
+                {{note.reminder}}
             </div>
+            <button class="btn btn-dark rounded mb-2 mr-1" routerLink="/home/{{note.noteid}}">Update</button>
+            <button class="btn btn-light rounded ml-2" (click)="deleteNote(note.noteid)" routerLink="/home">Delete Reminder</button>
         </div>
+    </div>
 </div>

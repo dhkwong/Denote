@@ -1,20 +1,7 @@
-// TODO - replace with sql logic instead of mongoose
 const mysql = require('mysql');
 const config = require('../config/config.js');
 let connection = mysql.createConnection(config);
 const bcrypt = require('bcrypt');
-// const mongoose = require('mongoose');
-// const Note = mongoose.model('Note')
-
-// var fs = require('fs');
-
-// try {
-//     var data = fs.readFileSync('my-file.txt', 'utf8');
-//     console.log(data);    
-// } catch(e) {
-//     console.log('Error:', e.stack);
-// }
-
 
 //setup for promise-ifying queries Database.query()
 class Database {
@@ -288,13 +275,13 @@ module.exports = {
     updateNote: (req, res) => {
         var sql = "UPDATE note SET reminder = (?) WHERE noteid = (?)"
         connection.query(sql, [req.body.reminder, req.params.id], function (err, results) {
-            if (err) {throw err}
+            if (err) { throw err }
             else if (/^\s*$/.test(req.body.reminder)) {
                 res.json({ error: "Reminder cannot be blank" })
                 // throw "Reminder cannot be blank"
             }
-            else{
-            res.json(results)
+            else {
+                res.json(results)
             }
         });
     },

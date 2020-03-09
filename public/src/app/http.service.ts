@@ -43,7 +43,7 @@ export class HttpService {
     return this._http.post(`/api/notes/${userId}`,reminder)
   }
   editNote(reminder:any, noteid:any){
-    console.log('updating note in http service. reminder: '+reminder)
+    console.log('updating note in http service')
     return this._http.put(`/api/notes/${noteid}`,reminder)
   }
   deleteNote(noteId:any){

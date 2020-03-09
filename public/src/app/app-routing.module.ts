@@ -10,7 +10,8 @@ const routes: Routes = [
   //if session not created yet, home will redirect to login
   { path: '', pathMatch: 'full', redirectTo: 'home' },
   { path: 'login', component: LoginComponent },
-  { path: 'home',
+  {
+    path: 'home',
     children: [{ path: '', component: HomeComponent },
     { path: ':id', component: UpdateComponent },
     ]
