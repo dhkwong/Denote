@@ -1,36 +1,36 @@
-<div *ngIf="replyerrors">
-    <div *ngFor="let error of replyerrors">
-        {{error}}
+<div class="row">
+    <div class="col-3">
     </div>
+        <div class="col-5 pull-right" *ngIf="replyerrors">
+            {{replyerrors}}
+        </div>
 </div>
-
-
 <div class="container-fluid mt-5">
     <div class="row">
         <div class=" col-5 inline d-flex justify-content-center">
             <form (submit)="login(loginValue)" #loginValue="ngForm">
                 <h4 class="block">Login</h4>
-                <label for="username">Username</label>
+                <label class="mr-2" for="username">Username</label>
                 <input type="text" name="username" id="username" ngModel />
                 <p></p>
-                <label for="password">Password</label>
+                <label class="mr-2" for="password">Password</label>
                 <input type="text" name="password" id="password" ngModel />
                 <p></p>
-                <input type="submit" value="Login" />
-                <a class="btn btn-dark rounded ml-2" routerLink="/login">Cancel</a>
+                <input class="btn btn-dark rounded" type="submit" value="Login" />
+                <a class="btn btn-secondary rounded ml-2" routerLink="/login">Cancel</a>
             </form>
         </div>
-        <div class="col-5 inline-block  d-flex justify-content-left">
+        <div class="col-5 inline-block  d-flex justify-content-center">
             <form (submit)="register(registerValue)" #registerValue="ngForm">
                 <h4>Register</h4>
-                <label for="username">Username</label>
+                <label class="mr-2" for="username">Username</label>
                 <input type="text" name="username" id="registerusername" ngModel />
                 <p></p>
-                <label for="password">Password</label>
+                <label class="mr-2" for="password">Password</label>
                 <input type="text" name="password" id="registerpassword" ngModel />
                 <p></p>
-                <input type="submit" value="Register" />
-                <a class="btn btn-dark rounded ml-2" routerLink="/login">Cancel</a>
+                <input class="btn btn-dark rounded" type="submit" value="Register" />
+                <a class="btn btn-secondary rounded ml-2" routerLink="/login">Cancel</a>
             </form>
         </div>
     </div>

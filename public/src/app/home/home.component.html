@@ -14,7 +14,10 @@
 </div>
 
 <div class="container-fluid">
-    <div class="row border border-dark rounded col-3 mt-1 mb-1 ml-2 p-3">
+    <div class="text-center form">
+
+    
+    <div class="row border border-dark rounded col-3 mt-1 mb-1 ml-2 p-3 ">
         <form (submit)="addNote(noteValue)" #noteValue="ngForm">
             <label for="reminder">Add Reminder</label>
             <p></p>
@@ -33,4 +36,5 @@
             <button class="btn btn-light rounded ml-2" (click)="deleteNote(note.noteid)" routerLink="/home">Delete Reminder</button>
         </div>
     </div>
+</div>
 </div>

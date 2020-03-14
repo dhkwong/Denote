@@ -63,53 +63,60 @@ module.exports = {
         //if values returned, user already exists
         console.log("register req.body: " + JSON.stringify(req.body))
         //bcrypt here
-
-        bcrypt.hash(req.body.password, 10, function (err, hash) {
-
-            if (err) {
-                throw err;
-            }
-            else {
-                var sql = "SELECT * FROM user WHERE username = (?) AND password = (?)";
-                connection.query(sql, [req.body.username, hash], function (err, results) {
-                    if (err) { throw err }
-                    //if a user already exists
-                    else if (results.length > 0) {
-                        console.log(JSON.stringify("pre-existing users for given username and password: " + JSON.stringify(results)))
-                        //log anyone out who's already logged in
-                        req.session.uid = null;
-                        //return false
-                        res.json({ login: false })
-                    }
-                    else if (results.length == 0) {//if there are no users, the results.length is going to be zero and you can create a user
-                        var sql1 = "INSERT INTO user(username, password) VALUES(?, ?)";
-                        connection.query(sql1, [req.body.username, hash], function (err, result) {
-                            console.log("Registration insert result:  " + JSON.stringify(result))
-                            try {
-                                //select user that was just created
-                                var sql = "SELECT * FROM user WHERE username = (?) AND password = (?) LIMIT 1";
-                                connection.query(sql, [req.body.username, hash], function (err, results) {
-                                    console.log("selecting user just created: " + JSON.stringify(results))
-                                    if (err) { throw err }
-                                    //set session user id 
-                                    else {
-                                        console.log("Registration select after insertion: " + results[0].id)
-                                        req.session.uid = JSON.stringify(results[0].id)
-                                        console.log(req.session.uid)
-                                        res.json({ login: true })
-                                    }
-                                })
-                            } catch (error) {
-                                res.json(error);
-                            }
-                        })
-                    } else {
-                        //if response, return uniqueness error
-                        res.json({ login: false, message: "ERROR user already exists" })
-                    }
-                })
-            }
-        })
+        if (/^\s*$/.test(req.body.password) || /^\s*$/.test(req.body.username)) {
+            res.json({ login: "Username or Password cannot be blank" })
+        }
+        else {
+            bcrypt.hash(req.body.password, 10, function (err, hash) {
+                if (err) {
+                    throw err;
+                }
+                else {
+                    var sql = "SELECT * FROM user WHERE username = (?)";
+                    //can't query for hash, because the hash will make a different random hash even if the passwords are the same.
+                    //also, we don't care as much about the uniqueness of passwords as much as we care about the username.
+                    connection.query(sql, [req.body.username], function (err, results) {
+                        console.log("results.length: "+results)
+                        if (err) { throw err }
+                        //if a user already exists
+                        else if (results.length > 0) {
+                            console.log(JSON.stringify("pre-existing users for given username and password: " + JSON.stringify(results)))
+                            //log anyone out who's already logged in
+                            req.session.uid = null;
+                            //return false
+                            res.json({ login: "user already exists" })
+                        }
+                        else if (results.length == 0) {//if there are no users, the results.length is going to be zero and you can create a user
+                            var sql1 = "INSERT INTO user(username, password) VALUES(?, ?)";
+                            connection.query(sql1, [req.body.username, hash], function (err, result) {
+                                console.log("Registration insert result:  " + JSON.stringify(result))
+                                try {
+                                    //select user that was just created
+                                    var sql = "SELECT * FROM user WHERE username = (?) AND password = (?) LIMIT 1";
+                                    connection.query(sql, [req.body.username, hash], function (err, results) {
+                                        console.log("selecting user just created: " + JSON.stringify(results))
+                                        if (err) { throw err }
+                                        //set session user id 
+                                        else {
+                                            console.log("Registration select after insertion: " + results[0].id)
+                                            req.session.uid = JSON.stringify(results[0].id)
+                                            console.log(req.session.uid)
+                                            res.json({ login: true })
+                                        }
+                                    })
+                                } catch (error) {
+                                    res.json(error);
+                                }
+                            })
+                        } else {
+                            //if response, return uniqueness error
+                            res.json({ login: false, message: "ERROR user already exists" })
+                        }
+                    })
+                }
+            })
+        }
+        
 
         // await connection.query(sql, [req.body.username, req.body.password], function (err, results) {
         //     console.log(JSON.stringify("pre-existing users for given username and password: " + JSON.stringify(results)))
